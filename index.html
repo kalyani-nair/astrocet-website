@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstroCET</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #030712;
+      --bg-2: #081226;
+      --bg-3: #0d1b3d;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --text: #eef4ff;
+      --muted: #b8c6e8;
+      --accent: #6ea8ff;
+      --accent-2: #64f4ff;
+      --accent-3: #c18cff;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --max-width: 1180px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(100, 244, 255, 0.15), transparent 18%),
+        radial-gradient(circle at 82% 10%, rgba(193, 140, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(110, 168, 255, 0.12), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 42%, var(--bg-3));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+.about-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.about-text {
+  flex: 1;
+}
+
+.about-img {
+  width: 250px;  
+  height: auto;
+  border-radius: 100px;
+  opacity: 0.9;
+}
+
+
+@media (max-width: 768px) {
+  .about-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .about-img {
+    width: 90px;
+    margin-top: 10px;
+  }
+}
+    canvas#stars {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+    }
+
+    .shooting-star {
+      position: fixed;
+      top: -60px;
+      left: -160px;
+      width: 180px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95));
+      transform: rotate(-25deg);
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.9));
+      opacity: 0;
+      pointer-events: none;
+      z-index: -2;
+      animation: shooting 10s linear infinite;
+    }
+
+    .shooting-star:nth-of-type(2) {
+      animation-delay: 3s;
+      top: 12%;
+    }
+
+    .shooting-star:nth-of-type(3) {
+      animation-delay: 6s;
+      top: 28%;
+    }
+
+    @keyframes shooting {
+      0% { transform: translate(-10vw, -10vh) rotate(-25deg); opacity: 0; }
+      8% { opacity: 1; }
+      20% { transform: translate(120vw, 60vh) rotate(-25deg); opacity: 0; }
+      100% { transform: translate(120vw, 60vh) rotate(-25deg); opacity: 0; }
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .section {
+      padding: 96px 0;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.45rem 0.8rem;
+      background: rgba(110, 168, 255, 0.14);
+      color: var(--accent-2);
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.9rem;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.85rem, 2.8vw, 3rem);
+      letter-spacing: 0.04em;
+      margin-bottom: 14px;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.75;
+      font-size: 1.03rem;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(3, 7, 18, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-wrap {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: conic-gradient(from 180deg, var(--accent-2), var(--accent), var(--accent-3), var(--accent-2));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 20px rgba(110, 168, 255, 0.45);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .brand-logo::before {
+      content: "✦";
+      color: white;
+      font-size: 1rem;
+      z-index: 1;
+    }
+
+    .brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.3rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 600;
+      position: relative;
+      transition: 0.3s ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.95rem 1.35rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      transition: 0.35s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #06101d;
+      box-shadow: 0 12px 30px rgba(100, 244, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 18px 34px rgba(100, 244, 255, 0.28);
+    }
+
+    .btn-secondary {
+      border-color: rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .hero {
+      min-height: calc(100vh - 78px);
+      display: grid;
+      place-items: center;
+      padding: 2rem 0 4rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.95rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      color: var(--accent-2);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.8rem);
+      line-height: 1.04;
+      letter-spacing: 0.03em;
+      margin-bottom: 1.2rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #fff, var(--accent-2), #d8dcff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.85;
+      max-width: 620px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2.2rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      font-size: 1.65rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .hero-visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 560px;
+    }
+
+    .planet-wrap {
+      position: relative;
+      width: min(470px, 100%);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .orbit,
+    .orbit-2,
+    .orbit-3 {
+      position: absolute;
+      inset: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .orbit { width: 94%; height: 94%; animation: spin 22s linear infinite; }
+    .orbit-2 { width: 72%; height: 72%; animation: spin 14s linear infinite reverse; }
+    .orbit-3 { width: 50%; height: 50%; animation: spin 10s linear infinite; }
+
+    .planet {
+      width: 42%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: relative;
+      background: radial-gradient(circle at 35% 30%, #f6fcff 0%, #9fdcff 15%, #4d7cff 38%, #1d2d7d 68%, #0d1338 100%);
+      box-shadow: inset -25px -25px 40px rgba(0,0,0,0.28), 0 0 45px rgba(100,244,255,0.18), 0 0 120px rgba(110,168,255,0.2);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .planet::before {
+      content: "";
+      position: absolute;
+      width: 150%;
+      height: 24%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(-18deg);
+      border-radius: 50%;
+      border: 10px solid rgba(193, 140, 255, 0.35);
+      box-shadow: 0 0 22px rgba(193, 140, 255, 0.18);
+    }
+
+    .moon,
+    .satellite,
+    .star-node {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .moon {
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle at 35% 35%, #ffffff, #c8d7ff 70%, #8ba3ff);
+      top: 9%;
+      left: 68%;
+      box-shadow: 0 0 20px rgba(255,255,255,0.32);
+      animation: bob 3.6s ease-in-out infinite;
+    }
+
+    .satellite {
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      top: 72%;
+      left: 18%;
+      box-shadow: 0 0 20px rgba(100,244,255,0.38);
+      animation: bob 4.4s ease-in-out infinite 0.5s;
+    }
+
+    .star-node {
+      width: 12px;
+      height: 12px;
+      background: white;
+      top: 18%;
+      left: 24%;
+      box-shadow: 0 0 16px rgba(255,255,255,0.55);
+      animation: twinkle 1.8s ease-in-out infinite;
+    }
+
+    .floating-card {
+      position: absolute;
+      padding: 1rem 1.15rem;
+      width: 220px;
+    }
+
+    .floating-card small {
+      display: block;
+      color: var(--accent-2);
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .floating-card strong {
+      display: block;
+      font-size: 1.04rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .floating-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .card-a {
+      top: 8%;
+      right: 2%;
+      animation: bob 4s ease-in-out infinite;
+    }
+
+    .card-b {
+      bottom: 8%;
+      left: 2%;
+      animation: bob 4.6s ease-in-out infinite 0.5s;
+    }
+
+    .about-grid,
+    .posts-grid,
+    .team-grid,
+    .contact-grid {
+      display: grid;
+      gap: 1.3rem;
+      margin-top: 2rem;
+      .contact-list a {
+  color: var(--accent-2);
+  text-decoration: none;
+  transition: 0.3s;
+}
+}
+.contact-list a:hover {
+  color: white;
+  text-decoration: underline;
+}
+    
+
+    .about-grid {
+      grid-template-columns: 1.15fr 0.85fr 0.85fr;
+      align-items: stretch;
+    }
+
+    .posts-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .team-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .contact-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .about-card,
+    .post-card,
+    .team-card,
+    .contact-card {
+      padding: 1.5rem;
+      transition: 0.35s ease;
+    }
+
+    .about-card:hover,
+    .post-card:hover,
+    .team-card:hover,
+    .contact-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    .about-card h3,
+    .post-card h3,
+    .team-card h3,
+    .contact-card h3 {
+      margin-bottom: 0.65rem;
+      font-size: 1.18rem;
+    }
+
+    .about-card p,
+    .post-card p,
+    .team-card p,
+    .contact-card p,
+    .contact-list li {
+      color: var(--muted);
+      line-height: 1.75;
+    }
+.event-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 1rem;
+}
+
+.event-content {
+  padding-top: 0.3rem;
+}
+    .team-avatar {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 25px rgba(100,244,255,0.15);
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+    .team-role {
+      display: inline-block;
+      margin-top: 0.7rem;
+      color: var(--accent-2);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .post-tag {
+      display: inline-flex;
+      margin-bottom: 0.9rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.82rem;
+      color: var(--accent-2);
+      font-weight: 600;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      outline: none;
+      font: inherit;
+      transition: 0.3s ease;
+    }
+
+    .contact-form textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: rgba(100,244,255,0.45);
+      box-shadow: 0 0 0 3px rgba(100,244,255,0.08);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: #9aa8cc;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 1rem;
+      padding-left: 0;
+    }
+
+    .contact-list li {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-start;
+    }
+
+    .status-message {
+      min-height: 1.4rem;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      z-index: 2000;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-content {
+      width: min(460px, 100%);
+      padding: 1.7rem;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 0.65rem;
+      font-size: 1.35rem;
+    }
+
+    .modal-content p {
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 1.2rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .footer {
+      padding: 2rem 0 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.5; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .about-grid,
+      .posts-grid,
+      .team-grid,
+      .contact-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .about-grid .about-card:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 840px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: 78px;
+        left: 0;
+        right: 0;
+        background: rgba(3,7,18,0.97);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 1rem;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hero-grid,
+      .about-grid,
+      .posts-grid,
+      .team-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 3rem;
+      }
+
+      .hero-visual {
+        min-height: 420px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .floating-card {
+        width: 190px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .section {
+        padding: 72px 0;
+      }
+
+      .nav-wrap {
+        min-height: 70px;
+      }
+
+      .brand span {
+        font-size: 0.95rem;
+      }
+
+      .hero h1 {
+        font-size: 2.45rem;
+      }
+
+      .hero p,
+      .section-subtitle,
+      .about-card p,
+      .post-card p,
+      .team-card p,
+      .contact-card p {
+        font-size: 0.98rem;
+      }
+
+      .floating-card {
+        position: static;
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .hero-visual {
+        display: block;
+      }
+
+      .planet-wrap {
+        margin: 0 auto;
+      }
+
+      .card-a,
+      .card-b {
+        animation: none;
+      }
+      
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+
+  <header class="navbar">
+    <div class="container nav-wrap">
+      <a href="#home" class="brand">
+        <img src="logo.png" alt="AstroCET Logo">
+        <span>astroCET</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#events">Events</a>
+        <a href="#posts">Posts</a>
+        <a href="#team">Team</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-content reveal">
+          <div class="eyebrow">🚀 Astronomy • Exploration • Community</div>
+          <h1>
+            Exploring the <span class="gradient-text">Universe</span><br>
+            Together.
+          </h1>
+          <p>
+            AstroCET is the esteemed astronomy club of the College of Engineering Trivandrum (CET). Established in 2019 as a humble hobby club, AstroCET has grown into a vibrant student community that blends celestial curiosity, technical learning, and meaningful collaboration through astronomy-focused events, discussions, and experiences.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">Join the Community</a>
+            <button class="btn btn-secondary" id="openEventBtn" type="button">Upcoming Event</button>
+          </div>
+
+          
+          
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="planet-wrap">
+            <div class="orbit"></div>
+            <div class="orbit-2"></div>
+            <div class="orbit-3"></div>
+            <div class="planet"></div>
+            <div class="moon"></div>
+            <div class="satellite"></div>
+            <div class="star-node"></div>
+          </div>
+
+          <div class="floating-card glass card-a">
+            <small>Upcoming Highlight</small>
+            <strong>Lunar Observation Night</strong>
+            <p>Join us for guided telescope viewing, beginner sky-mapping, and a shared night under the stars.</p>
+          </div>
+
+          <div class="floating-card glass card-b">
+            <small>Club Update</small>
+            <strong>New Technical Sessions</strong>
+            <p>AstroCET is expanding into deeper explorations of astrophotography, instrumentation, and space science.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+ <div class="about-header reveal">
+  <div class="about-text">
+    <div class="badge">ABOUT US</div>
+
+    <p class="section-subtitle">
+      astroCET brings together students who are fascinated by astronomy, space science, and cosmic exploration.
+    </p>
+  </div>
+
+  <img src="about.webp" class="about-img">
+</div>
+
+        <div class="about-grid">
+          <article class="about-card glass reveal">
+            <h3>Who We Are</h3>
+            <p>
+              astroCET is the esteemed astronomy club of the College of Engineering Trivandrum (CET). AstroCET has embarked on a journey of astronomical proportions over the past year. Established in 2019 as a humble hobby club, AstroCET has now evolved into a beacon of celestial exploration, fostering camaraderie among students while diving deeper into the technical facets of the cosmos.
+            </p>
+          </article>
+
+          <article class="about-card glass reveal">
+            <h3>Mission</h3>
+            <p>
+              The club's primary mission is to ignite a passion for astronomy among students and the general public, providing a platform for learning, exploration, and innovation.
+            </p>
+          </article>
+
+          <article class="about-card glass reveal">
+            <h3>Vision</h3>
+            <p>
+             astroCET aims to lead in astronomy education and outreach, inspiring students and the public to explore the cosmos. By fostering skill development, collaborating with institutions, and promoting innovation, the club seeks to create an inclusive environment, expand its reach, and contribute to scientific knowledge
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="events">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">EVENTS</div>
+          <h2 class="section-title">Experiences that bring the sky closer</h2>
+          <p class="section-subtitle">
+            From stargazing nights to beginner workshops and interactive discussions, our events make astronomy exciting, social, and memorable.
+          </p>
+        </div>
+
+        <div class="posts-grid" style="margin-top:2rem;">
+          <article class="event-card glass reveal">
+            
+            <span class="post-tag">Skywatch</span>
+
+  <img src="e1.jfif" class="event-img" alt="eventimages">
+
+  <div class="event-content">
+  
+    <h3>GBFK outreach Program</h3>
+    <p>
+      AstroCET's outreach at the 'Global Science Festival Kerala' featured Dr. Sarita Vig from IIST, inspiring students to pursue astronomy, followed by a sky-gazing session with the Breakthrough Science Society..
+    </p>
+  </div>
+</article>
+          <article class="post-card glass reveal">
+            <span class="post-tag">Workshop</span>
+             <img src="e2.jfif" class="event-img" alt="eventimages">
+
+            <h3>Drishti 24 featured a standout AI/ML for Space</h3>
+            <p>Exploration workshop by AstroCET and HT Labs India. Over 70 participants learned Python-based data analysis and ML applications in astronomy, with hands-on experience using real astronomical data.</p>
+          </article>
+
+          <article class="post-card glass reveal">
+            <span class="post-tag">Astrophotography</span>
+             <img src="e3.jfif" class="event-img" alt="eventimages">
+
+            <h3>Astrophotography workshop</h3>
+            <p>
+On 25 November 2023, ASTRO-CET hosted an astrophotography workshop with CET SHUTTERBUGS and AASTRO KERALA, led by renowned expert Sarath Prabhavu J.
+</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="posts">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">POSTS</div>
+          <h2 class="section-title">Recent developments in space</h2>
+          <p class="section-subtitle">
+            A dedicated section for space-related updates, discoveries, and scientific milestones that keep the community informed and inspired.
+          </p>
+        </div>
+
+        <div class="posts-grid">
+          <article class="post-card glass reveal">
+            <span class="post-tag">Mission Update</span>
+            <h3>Artemis II Mission</h3>
+            <p>NASA continues preparations for its next major crewed lunar mission, renewing global interest in human space exploration.</p>
+          </article>
+
+          <article class="post-card glass reveal">
+            <span class="post-tag">Discovery</span>
+            <h3>New Exoplanet Findings</h3>
+            <p>Researchers continue identifying intriguing exoplanets that expand our understanding of planetary systems beyond our own.</p>
+          </article>
+
+          <article class="post-card glass reveal">
+            <span class="post-tag">Telescope Science</span>
+            <h3>James Webb Breakthroughs</h3>
+            <p>Deep-space observations from JWST are offering remarkable insights into early galaxies, star formation, and cosmic history.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="team">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">TEAM</div>
+          <h2 class="section-title">Meet the people behind astroCET</h2>
+          <p class="section-subtitle">
+            A passionate team of organizers, learners, and astronomy enthusiasts working together to build meaningful experiences for the campus community.
+          </p>
+        </div>
+
+        <div class="team-grid">
+                <article class="team-card glass reveal">
+          <div class="team-avatar">
+  <img src="p1.jfif" alt="Robin">
+</div>
+            <h3>Robin</h3>
+            <span class="team-role">Chairperson</span>
+          </article>
+
+          <article class="team-card glass reveal">
+            <div class="team-avatar">
+  <img src="p2.avif" alt="Sia">
+</div>
+            
+            <h3>Sia</h3>
+            
+            <span class="team-role">Vice Chairperson</span>
+          </article>
+
+   
+
+          <article class="team-card glass reveal">
+          <div class="team-avatar">
+  <img src="p3.jfif" alt="clara">
+</div>
+            <h3>Clara</h3>
+            <span class="team-role">Club Coordinator</span>
+             
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="reveal">
+          <div class="badge">CONTACT US</div>
+          <h2 class="section-title">Stay connected with astroCET</h2>
+          <p class="section-subtitle">
+            Reach out to join the club, collaborate on events, or subscribe for updates on astronomy sessions, talks, and observation nights.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <article class="contact-card glass reveal">
+            <h3>Get in Touch</h3>
+            <p>We would love to hear from students, collaborators, and anyone interested in the world beyond Earth.</p>
+            <ul class="contact-list">
+              <li><strong>Email:</strong><a href="mailto:astrocet@cet.ac.in">astrocet@cet.ac.in</a></li>
+              <li>
+
+  <strong>Instagram:</strong>
+  <a href="http://instagram.com/astro.cet/" target="_blank"> astroCET@instagram</a>
+</li>
+
+<li>
+  
+  <strong>LinkedIn:</strong>
+  <a href="https://www.linkedin.com/company/astrocet/posts/?feedView=all" target="_blank"> astroCET@linkedin</a>
+</li>
+              <li><strong>Location:</strong> College of Engineering Trivandrum</li>
+              <li><strong>Community:</strong> Astronomy club for learners, enthusiasts, and explorers</li>
+            </ul>
+          </article>
+
+          <article class="contact-card glass reveal">
+            <h3>Subscribe for Updates</h3>
+            <form class="contact-form" id="subscribeForm">
+              <input type="email" id="email" placeholder="Enter your email" required>
+              <textarea id="message" placeholder="Leave a message (optional)"></textarea>
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+              <p id="msg" class="status-message"></p>
+            </form>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <div>
+        <strong style="font-family: 'Orbitron', sans-serif; letter-spacing: 0.05em;">&copy;astroCET</strong><br>
+        <span><small>All rights reserved</small></span>
+      </div>
+
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#events">Events</a>
+        <a href="#posts">Posts</a>
+        <a href="#team">Team</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="eventModal" aria-hidden="true">
+    <div class="modal-content glass">
+      <h3>Upcoming Event</h3>
+      <p>
+        Stargazing Night is coming soon. Expect guided skywatching, telescope access, and an amazing chance to explore the robin with the AstroCET community.
+      </p>
+      <div class="modal-actions">
+        <a href="#events" class="btn btn-primary" id="viewEventsBtn">View Events</a>
+        <button class="btn btn-secondary" type="button" id="closeModalBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({ length: 180 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 0.4,
+        speed: Math.random() * 0.35 + 0.08
+      }));
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'white';
+
+      stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        star.y += star.speed;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      });
+
+      requestAnimationFrame(animateStars);
+    }
+
+    resizeCanvas();
+    animateStars();
+    window.addEventListener('resize', resizeCanvas);
+
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    menuBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      menuBtn.textContent = navLinks.classList.contains('open') ? '✕' : '☰';
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuBtn.textContent = '☰';
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const sections = document.querySelectorAll('main section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+      let current = 'home';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navAnchors.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+      });
+    });
+
+    const modal = document.getElementById('eventModal');
+    const openEventBtn = document.getElementById('openEventBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const viewEventsBtn = document.getElementById('viewEventsBtn');
+
+    function openModal() {
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    openEventBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    viewEventsBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    const subscribeForm = document.getElementById('subscribeForm');
+    const emailInput = document.getElementById('email');
+    const msg = document.getElementById('msg');
+
+    subscribeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      if (pattern.test(email)) {
+        msg.textContent = 'Subscribed successfully!';
+        msg.style.color = 'lightgreen';
+        subscribeForm.reset();
+      } else {
+        msg.textContent = 'Please enter a valid email address.';
+        msg.style.color = '#ff8b8b';
+      }
+    });
+  </script>
+</body>
+</html>
